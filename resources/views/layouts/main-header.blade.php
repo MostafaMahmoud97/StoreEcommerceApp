@@ -254,16 +254,19 @@
 										<div class="d-flex wd-100p">
 											<div class="main-img-user"><img alt="" src="{{URL::asset('assets/img/faces/6.jpg')}}" class=""></div>
 											<div class="mr-3 my-auto">
-												<h6>Petey Cruiser</h6><span>Premium Member</span>
+												<h6>{{\Illuminate\Support\Facades\Auth::user()->name}}</h6><span>{{\Illuminate\Support\Facades\Auth::user()->type}}</span>
 											</div>
 										</div>
 									</div>
-									<a class="dropdown-item" href=""><i class="bx bx-user-circle"></i>Profile</a>
+									<a class="dropdown-item" href="{{route('user.profile')}}"><i class="bx bx-user-circle"></i>Profile</a>
 									<a class="dropdown-item" href=""><i class="bx bx-cog"></i> Edit Profile</a>
 									<a class="dropdown-item" href=""><i class="bx bxs-inbox"></i>Inbox</a>
 									<a class="dropdown-item" href=""><i class="bx bx-envelope"></i>Messages</a>
 									<a class="dropdown-item" href=""><i class="bx bx-slider-alt"></i> Account Settings</a>
-									<a class="dropdown-item" href="{{ url('/' . $page='page-signin') }}"><i class="bx bx-log-out"></i> Sign Out</a>
+                                    <form action="{{route('logout')}}" method="Post">
+                                        @csrf
+                                        <button class="dropdown-item" type="submit"><i class="bx bx-log-out"></i> Sign Out</button>
+                                    </form>
 								</div>
 							</div>
 							<div class="dropdown main-header-message right-toggle">

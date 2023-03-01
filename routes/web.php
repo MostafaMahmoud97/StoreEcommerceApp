@@ -14,13 +14,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('auth.login_form');
+    return view('auth.login');
 });
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/{name_route}',function ($name_route){
     return view($name_route);
 });
 
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::controller(\App\Http\Controllers\User\UserController::class)->prefix('user')->group(function (){
+   Route::get('/profile','showProfile')->name('user.profile');
+   Route::post('/update-profile','editUser')->name('user.update.profile');
+});
