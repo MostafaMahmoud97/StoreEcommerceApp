@@ -24,4 +24,6 @@ class Setting extends Model
         "youtube",
         "tiktok"
     ];
+
+
 }
