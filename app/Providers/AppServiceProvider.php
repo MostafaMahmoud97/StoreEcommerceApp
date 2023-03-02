@@ -38,8 +38,6 @@ class AppServiceProvider extends ServiceProvider
                 "facebook" => "https://www.facebook.com",
             ]);
         });
-
-        dd($setting);
         view()->share('setting',$setting);
     }
 }
