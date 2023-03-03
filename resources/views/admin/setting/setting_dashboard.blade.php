@@ -68,10 +68,12 @@
                                             <input class="form-control" id="phoneMask" value="{{$setting->phone}}" placeholder="(000) 000-0000" type="text" name="phone">
                                         </div><!-- input-group -->
                                         <br>
+                                        <img alt="Responsive image" class="img-thumbnail wd-100p wd-sm-200" src="{{$setting->logo}}">
                                         <div class="custom-file">
                                             <input class="custom-file-input" id="customFile" name="logo_val" value="{{$setting->logo}}" type="file"> <label class="custom-file-label" for="customFile">Logo file</label>
                                         </div>
                                         <br><br>
+                                        <img alt="Responsive image" class="img-thumbnail wd-100p wd-sm-200" src="{{$setting->favicon}}">
                                         <div class="custom-file">
                                             <input class="custom-file-input" id="customFile" name="favicon_val" value="{{$setting->favicon}}" type="file"> <label class="custom-file-label" for="customFile">Favicon file</label>
                                         </div>

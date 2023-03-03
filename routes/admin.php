@@ -15,6 +15,11 @@ Route::group(['middleware' => 'auth.admin'],function (){
         Route::get('/','showSettingPage')->name('admin.setting.show');
         Route::put('/{id}','updateSetting')->name('admin.setting.update');
     });
+
+    Route::controller(\App\Http\Controllers\Admin\Categories\CategoryController::class)->prefix('categories')->group(function (){
+        Route::get('/','index')->name("admin.category.index");
+        Route::post('/store','store')->name("admin.category.store");
+    });
 });
 
 

@@ -19,7 +19,7 @@
 		@include('layouts.admin.main-sidebar')
 		<!-- main-content -->
 		<div class="main-content app-content">
-			@include('layouts.main-header')
+			@include('layouts.admin.main-header')
 			<!-- container -->
 			<div class="container-fluid">
 				@yield('page-header')

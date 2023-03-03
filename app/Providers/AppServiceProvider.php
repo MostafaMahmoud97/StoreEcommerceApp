@@ -38,6 +38,12 @@ class AppServiceProvider extends ServiceProvider
                 "facebook" => "https://www.facebook.com",
             ]);
         });
+
+        $setting->logo = asset('file/ImageSetting/'.$setting->logo);
+        $setting->favicon = asset('file/ImageSetting/'.$setting->favicon);
+
+
         view()->share('setting',$setting);
+
     }
 }
