@@ -19,6 +19,14 @@ Route::group(['middleware' => 'auth.admin'],function (){
     Route::controller(\App\Http\Controllers\Admin\Categories\CategoryController::class)->prefix('categories')->group(function (){
         Route::get('/','index')->name("admin.category.index");
         Route::post('/store','store')->name("admin.category.store");
+        Route::get('/update/{id}','update')->name("admin.category.update");
+        Route::put('/edit/{id}','edit')->name('admin.category.edit');
+        Route::get('/delete/{id}','delete')->name('admin.category.delete');
+    });
+
+    Route::controller(\App\Http\Controllers\Admin\Products\ProductController::class)->prefix('products')->group(function (){
+       Route::get('/','index')->name('admin.product.index');
+       Route::post('/store','store')->name("admin.product.store");
     });
 });
 

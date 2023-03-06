@@ -12,14 +12,14 @@ class ProductColor extends Model
     protected $fillable = [
         "id",
         'product_id',
-        "color"
+        "color_name"
     ];
 
     public function Product(){
         return $this->belongsTo(Product::class,"product_id","id");
     }
 
-    public function ProductColorSizes(){
+    public function ProductSizes(){
         return $this->belongsToMany(ProductColorSize::class,"product_color_sizes","product_color_id","product_size_id","id","id");
     }
 }
