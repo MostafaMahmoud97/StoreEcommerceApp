@@ -22,4 +22,16 @@ class ProductController extends Controller
     public function store(ProductStoreRequest $request){
         return $this->service->store($request);
     }
+
+    public function showProductGallery($product_id){
+        return $this->service->showProductGallery($product_id);
+    }
+
+    public function showProductColorSize($id){
+        return $this->service->showProductColorSize($id);
+    }
+
+    public function updateProductColorSize(Request $request){
+        return $this->service->updateProductColorSize($request);
+    }
 }

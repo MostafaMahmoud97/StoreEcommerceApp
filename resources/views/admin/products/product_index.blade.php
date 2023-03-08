@@ -62,6 +62,7 @@
                                                 <th class="wd-15p border-bottom-0">Image</th>
                                                 <th class="wd-15p border-bottom-0">Price</th>
                                                 <th class="wd-15p border-bottom-0">Discount</th>
+                                                <th class="wd-15p border-bottom-0">Number Colors</th>
                                                 <th class="wd-20p border-bottom-0">Action</th>
                                             </tr>
                                             </thead>
@@ -79,15 +80,11 @@
                                                     </td>
                                                     <td>{{$Product->price}}</td>
                                                     <td>{{$Product->discount_price}}</td>
+                                                    <td>{{$Product->count_color}}</td>
                                                     <td>
-                                                        <a href="">
-                                                            <i class="icon ion-md-trash" style="color: red;font-size: 30px"></i>
-                                                        </a>
-
-                                                        &nbsp;&nbsp;&nbsp;
-                                                        <a href="">
-                                                            <i class="icon ion-md-create" style="color: gray;font-size: 30px"></i>
-                                                        </a>
+                                                        <a class="dropdown-item" href="{{route('admin.product.details',$Product->id)}}"><i class="text-danger fas fa-trash"></i> &nbsp;&nbsp;Delete</a>
+                                                        <a class="dropdown-item" href="{{route('admin.product.details',$Product->id)}}"><i class="text-primary fas fa-edit"></i> &nbsp;&nbsp;Details</a>
+                                                        <a class="dropdown-item" href="{{route('admin.product.gallery',$Product->id)}}"><i class="text-secondary fas fa-image"></i> &nbsp;&nbsp;Gallery</a>
                                                     </td>
                                                 </tr>
                                                 <?php
@@ -130,12 +127,13 @@
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control @error('description') is-invalid @enderror" id="inputName" placeholder="Description" name="description">
-                        </div>
-                        @error('description')
-                        <span class="invalid-feedback" role="alert">
+                            @error('description')
+                            <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
-                        @enderror
+                            @enderror
+                        </div>
+
                         <div class="custom-file">
                             <input class="custom-file-input @error('image_val') is-invalid @enderror" id="customFile" name="image_val" type="file"> <label class="custom-file-label" for="customFile">Image file</label>
                             @error('image_val')
@@ -181,24 +179,11 @@
 
                         <div class="col-lg-12 mg-b-20 mg-lg-b-0">
                             <select class="form-control select2 @error('colors') is-invalid @enderror" style="width: 100%" multiple="multiple" name="colors[]">
-                                <option selected value="#e2062c">
-                                    Red
-                                </option>
-                                <option value="#0fc163">
-                                    Green
-                                </option>
-                                <option value="#5865f2">
-                                    Blue
-                                </option>
-                                <option value="#f1c232">
-                                    Yellow
-                                </option>
-                                <option value="#ce7e00">
-                                    Orange
-                                </option>
-                                <option value="#999999">
-                                    Gray
-                                </option>
+                                @foreach($Colors as $color)
+                                    <option selected value="{{$color->id}}">
+                                        {{$color->color_name}}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('colors')
                             <span class="invalid-feedback" role="alert">
@@ -209,20 +194,22 @@
                         <br>
                         <div class="col-lg-12 mg-b-20 mg-lg-b-0">
                             <select class="form-control select2 @error('sizes') is-invalid @enderror" style="width: 100%" multiple="multiple" name="sizes[]">
-                                <option selected value="Small">
-                                    Small
-                                </option>
-                                <option value="Medium">
-                                    Medium
-                                </option>
-                                <option value="Large">
-                                    Large
-                                </option>
-                                <option value="X Large">
-                                    X Large
-                                </option>
+                                @foreach($Sizes as $size)
+                                    <option selected value="{{$size->id}}">
+                                        {{$size->size}}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('sizes')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <br>
+                        <div class="custom-file">
+                            <input class="custom-file-input @error('images') is-invalid @enderror" id="customFile" name="images[]" type="file" multiple> <label class="custom-file-label" for="customFile">Image files</label>
+                            @error('images')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -270,7 +257,6 @@
 <script src="{{URL::asset('assets/plugins/datatable/js/responsive.bootstrap4.min.js')}}"></script>
 <!--Internal  Datatable js -->
 <script src="{{URL::asset('assets/js/table-data.js')}}"></script>
-
 <!-- Internal Modal js-->
 <script src="{{URL::asset('assets/js/modal.js')}}"></script>
 @endsection

@@ -24,6 +24,14 @@ class CategoryService{
             ]);
         }
 
+        $ParentCategory = Category::find($request->parent_id);
+        if ($ParentCategory){
+            if ($ParentCategory->parent_id != null || $ParentCategory->parent_id != 0){
+                return redirect()->back()->with(['status' => "error","message" => "The Parent has parent category"]);
+            }
+        }
+
+
         $Category = Category::create($request->all());
         return redirect()->route('admin.category.index')->with(['status' => 'success','message' => "Category Has Been Added Success"]);
     }

@@ -27,6 +27,9 @@ Route::group(['middleware' => 'auth.admin'],function (){
     Route::controller(\App\Http\Controllers\Admin\Products\ProductController::class)->prefix('products')->group(function (){
        Route::get('/','index')->name('admin.product.index');
        Route::post('/store','store')->name("admin.product.store");
+       Route::get('/gallery/{id}','showProductGallery')->name("admin.product.gallery");
+       Route::get('/show-details/{id}','showProductColorSize')->name("admin.product.details");
+       Route::post('/update-product-color-size','updateProductColorSize')->name("admin.product.detail.update");
     });
 });
 

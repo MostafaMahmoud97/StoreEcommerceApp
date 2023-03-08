@@ -11,11 +11,11 @@ class ProductImage extends Model
     protected $table = "product_images";
     protected $fillable = [
         "id",
-        'product_color_size_id',
+        'product_id',
         "image"
     ];
 
-    public function ProductColorSize(){
-        return $this->belongsTo(ProductColorSize::class,"product_color_size_id","id");
+    public function Product(){
+        return $this->belongsTo(Product::class,"product_id","id");
     }
 }

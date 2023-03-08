@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('product_colors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
             $table->string("color_name");
+            $table->string("color");
             $table->timestamps();
         });
     }

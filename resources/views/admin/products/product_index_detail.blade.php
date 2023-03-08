@@ -47,8 +47,7 @@
 							<div class="card-body">
                                 <div class="card-header pb-0">
                                     <div class="d-flex justify-content-between">
-                                        <h4 class="card-title mg-b-0">Products</h4>
-                                        <a class="mdi mdi-horizontal btn ripple btn-primary" data-target="#modaldemo2" data-toggle="modal" href="">Add New Product</a>
+                                        <h4 class="card-title mg-b-0">Products Detail : <span style="color: grey">{{$Product->name}}</span></h4>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -57,11 +56,13 @@
                                             <thead>
                                             <tr>
                                                 <th class="wd-15p border-bottom-0">#</th>
-                                                <th class="wd-15p border-bottom-0">Product Name</th>
-                                                <th class="wd-20p border-bottom-0">Category</th>
-                                                <th class="wd-15p border-bottom-0">Image</th>
+                                                <th class="wd-20p border-bottom-0">Color</th>
+                                                <th class="wd-15p border-bottom-0">Size</th>
+                                                <th class="wd-15p border-bottom-0">Quantity</th>
+                                                <th class="wd-15p border-bottom-0">In Stock</th>
                                                 <th class="wd-15p border-bottom-0">Price</th>
-                                                <th class="wd-15p border-bottom-0">Discount</th>
+                                                <th class="wd-15p border-bottom-0">Discount Price</th>
+                                                <th class="wd-15p border-bottom-0">Status</th>
                                                 <th class="wd-20p border-bottom-0">Action</th>
                                             </tr>
                                             </thead>
@@ -69,27 +70,36 @@
                                             <?php
                                             $count = 1
                                                 ?>
-                                            @foreach($Products as $Product)
-                                                <tr>
-                                                    <td>{{$count}}</td>
-                                                    <td>{{$Product->name}}</td>
-                                                    <td>{{$Product->Category->name}}</td>
-                                                    <td>
-                                                        <img alt="Responsive image" class="img-thumbnail wd-50p wd-sm-50" src="{{asset('file/ImageProduct/'.$Product->image)}}">
-                                                    </td>
-                                                    <td>{{$Product->price}}</td>
-                                                    <td>{{$Product->discount_price}}</td>
-                                                    <td>
-                                                        <a href="">
-                                                            <i class="icon ion-md-trash" style="color: red;font-size: 30px"></i>
-                                                        </a>
+                                            @foreach($Product->ProductColorSizes as $ProductColor)
+                                                    <tr>
+                                                        <td>{{$count}}</td>
+                                                        <td>{{$ProductColor->ProductColor->color_name}}</td>
+                                                        <td>{{$ProductColor->ProductSize->size}}</td>
+                                                        <td>{{$ProductColor->quantity}}</td>
+                                                        <td>{{$ProductColor->in_stock}}</td>
+                                                        <td>{{$ProductColor->price}}</td>
+                                                        <td>{{$ProductColor->discount_price}}</td>
+                                                        <td>
+                                                            <div class="checkbox">
+                                                                <div class="custom-checkbox custom-control">
+                                                                    <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-1" name="status" @if($ProductColor->status == 1) checked @endif disabled>
+                                                                    <label for="checkbox-1" class="custom-control-label mt-1">Availability</label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <a class="dropdown-item modal-effect"
+                                                               data-id="{{$ProductColor->id}}"
+                                                               data-quantity="{{$ProductColor->quantity}}"
+                                                               data-price="{{$ProductColor->price}}"
+                                                               data-discount="{{$ProductColor->discount_price}}"
+                                                               data-status="{{$ProductColor->status}}"
+                                                               data-in_stock="{{$ProductColor->in_stock}}"
+                                                               data-toggle="modal" data-effect="effect-scale"
+                                                               href="#exampleModal2"><i class="text-primary fas fa-edit"></i> &nbsp;&nbsp;Edit</a>
+                                                        </td>
+                                                    </tr>
 
-                                                        &nbsp;&nbsp;&nbsp;
-                                                        <a href="">
-                                                            <i class="icon ion-md-create" style="color: gray;font-size: 30px"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
                                                 <?php
                                                     $count++
                                                     ?>
@@ -109,139 +119,191 @@
 		</div>
 		<!-- main-content closed -->
 
-    <!-- Small modal -->
-    <div class="modal" id="modaldemo2">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
+    <!-- Edit Product Color Size modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content modal-content-demo">
                 <div class="modal-header">
-                    <h6 class="modal-title">Add New Product</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
+                    <h6 class="modal-title">Edit Product</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="modal-body">
+                <form action="{{route('admin.product.detail.update')}}" method="post">
+                    @csrf
 
-                    <form class="form-horizontal" action="{{route("admin.product.store")}}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="inputName" placeholder="Name" name="name">
-                            @error('name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control @error('description') is-invalid @enderror" id="inputName" placeholder="Description" name="description">
-                        </div>
-                        @error('description')
-                        <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                        <div class="custom-file">
-                            <input class="custom-file-input @error('image_val') is-invalid @enderror" id="customFile" name="image_val" type="file"> <label class="custom-file-label" for="customFile">Image file</label>
-                            @error('image_val')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                        <br><br>
-                        <div class="form-group">
-                            <input type="number" class="form-control @error('price') is-invalid @enderror" id="inputName" placeholder="Price" name="price">
-                            @error('price')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <input type="number" class="form-control @error('discount_price') is-invalid @enderror" id="inputName" placeholder="Discount" name="discount_price">
-                        </div>
-                        @error('discount_price')
-                        <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                        <div class="form-group">
-                            <select class="form-control @error('category_id') is-invalid @enderror" name="category_id">
-                                <option label="Choose Category" >
-                                </option>
-                                @foreach($Categories as $Category)
-                                    <option value="{{$Category->id}}">
-                                        {{$Category->name}}
-                                    </option>
-                                @endforeach
-
-                            </select>
-                            @error('category_id')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-
-                        <div class="col-lg-12 mg-b-20 mg-lg-b-0">
-                            <select class="form-control select2 @error('colors') is-invalid @enderror" style="width: 100%" multiple="multiple" name="colors[]">
-                                <option selected value="#e2062c">
-                                    Red
-                                </option>
-                                <option value="#0fc163">
-                                    Green
-                                </option>
-                                <option value="#5865f2">
-                                    Blue
-                                </option>
-                                <option value="#f1c232">
-                                    Yellow
-                                </option>
-                                <option value="#ce7e00">
-                                    Orange
-                                </option>
-                                <option value="#999999">
-                                    Gray
-                                </option>
-                            </select>
-                            @error('colors')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id">
+                        <div class="col-lg">
+                            <label for="quantity">Quantity</label>
+                            <input id="quantity" class="form-control" placeholder="Quantity" type="number" name="quantity">
                         </div>
                         <br>
-                        <div class="col-lg-12 mg-b-20 mg-lg-b-0">
-                            <select class="form-control select2 @error('sizes') is-invalid @enderror" style="width: 100%" multiple="multiple" name="sizes[]">
-                                <option selected value="Small">
-                                    Small
-                                </option>
-                                <option value="Medium">
-                                    Medium
-                                </option>
-                                <option value="Large">
-                                    Large
-                                </option>
-                                <option value="X Large">
-                                    X Large
-                                </option>
-                            </select>
-                            @error('sizes')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
+                        <div class="col-lg">
+                            <label for="price">Price</label>
+                            <input id="price" class="form-control" placeholder="Price" type="number" name="price">
                         </div>
-
-
-                        <div class="form-group mb-0 mt-3 justify-content-end">
-                            <div class="modal-footer justify-content-center">
-                                <button class="btn ripple btn-primary" type="submit">Save</button>
-                                <button class="btn ripple btn-secondary" data-dismiss="modal" type="button">Close</button>
+                        <br>
+                        <div class="col-lg">
+                            <label for="discount">Discount Price</label>
+                            <input id="discount" class="form-control" placeholder="Discount Price" type="number" name="discount_price">
+                        </div>
+                        <br>
+                        <div class="col-lg">
+                            <label for="in_stock">In Stock</label>
+                            <input id="in_stock" class="form-control" placeholder="In Stock" type="number" name="in_stock">
+                        </div>
+                        <br>
+                        <div class="checkbox">
+                            <div class="custom-checkbox custom-control">
+                                <label>Status</label>
+                                <br>
+                                <input id="status" type="checkbox" data-checkboxes="mygroup" class="custom-control-input" name="status">
+                                <label for="status" class="custom-control-label mt-1">Availability</label>
                             </div>
                         </div>
-                    </form>
-
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+    <!--/div-->
+
+    <!-- Small modal -->
+{{--    <div class="modal" id="modaldemo2">--}}
+{{--        <div class="modal-dialog modal-md" role="document">--}}
+{{--            <div class="modal-content">--}}
+{{--                <div class="modal-header">--}}
+{{--                    <h6 class="modal-title">Add New Product</h6><button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true">&times;</span></button>--}}
+{{--                </div>--}}
+{{--                <div class="modal-body">--}}
+
+{{--                    <form class="form-horizontal" action="{{route("admin.product.store")}}" method="POST" enctype="multipart/form-data">--}}
+{{--                        @csrf--}}
+{{--                        <div class="form-group">--}}
+{{--                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="inputName" placeholder="Name" name="name">--}}
+{{--                            @error('name')--}}
+{{--                            <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+{{--                        <div class="form-group">--}}
+{{--                            <input type="text" class="form-control @error('description') is-invalid @enderror" id="inputName" placeholder="Description" name="description">--}}
+{{--                        </div>--}}
+{{--                        @error('description')--}}
+{{--                        <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                        @enderror--}}
+{{--                        <div class="custom-file">--}}
+{{--                            <input class="custom-file-input @error('image_val') is-invalid @enderror" id="customFile" name="image_val" type="file"> <label class="custom-file-label" for="customFile">Image file</label>--}}
+{{--                            @error('image_val')--}}
+{{--                            <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+{{--                        <br><br>--}}
+{{--                        <div class="form-group">--}}
+{{--                            <input type="number" class="form-control @error('price') is-invalid @enderror" id="inputName" placeholder="Price" name="price">--}}
+{{--                            @error('price')--}}
+{{--                            <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+{{--                        <div class="form-group">--}}
+{{--                            <input type="number" class="form-control @error('discount_price') is-invalid @enderror" id="inputName" placeholder="Discount" name="discount_price">--}}
+{{--                        </div>--}}
+{{--                        @error('discount_price')--}}
+{{--                        <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                        @enderror--}}
+{{--                        <div class="form-group">--}}
+{{--                            <select class="form-control @error('category_id') is-invalid @enderror" name="category_id">--}}
+{{--                                <option label="Choose Category" >--}}
+{{--                                </option>--}}
+{{--                                @foreach($Categories as $Category)--}}
+{{--                                    <option value="{{$Category->id}}">--}}
+{{--                                        {{$Category->name}}--}}
+{{--                                    </option>--}}
+{{--                                @endforeach--}}
+
+{{--                            </select>--}}
+{{--                            @error('category_id')--}}
+{{--                            <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+{{--                        <div class="col-lg-12 mg-b-20 mg-lg-b-0">--}}
+{{--                            <select class="form-control select2 @error('colors') is-invalid @enderror" style="width: 100%" multiple="multiple" name="colors[]">--}}
+{{--                                <option selected value="#e2062c">--}}
+{{--                                    Red--}}
+{{--                                </option>--}}
+{{--                                <option value="#0fc163">--}}
+{{--                                    Green--}}
+{{--                                </option>--}}
+{{--                                <option value="#5865f2">--}}
+{{--                                    Blue--}}
+{{--                                </option>--}}
+{{--                                <option value="#f1c232">--}}
+{{--                                    Yellow--}}
+{{--                                </option>--}}
+{{--                                <option value="#ce7e00">--}}
+{{--                                    Orange--}}
+{{--                                </option>--}}
+{{--                                <option value="#999999">--}}
+{{--                                    Gray--}}
+{{--                                </option>--}}
+{{--                            </select>--}}
+{{--                            @error('colors')--}}
+{{--                            <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+{{--                        <br>--}}
+{{--                        <div class="col-lg-12 mg-b-20 mg-lg-b-0">--}}
+{{--                            <select class="form-control select2 @error('sizes') is-invalid @enderror" style="width: 100%" multiple="multiple" name="sizes[]">--}}
+{{--                                <option selected value="Small">--}}
+{{--                                    Small--}}
+{{--                                </option>--}}
+{{--                                <option value="Medium">--}}
+{{--                                    Medium--}}
+{{--                                </option>--}}
+{{--                                <option value="Large">--}}
+{{--                                    Large--}}
+{{--                                </option>--}}
+{{--                                <option value="X Large">--}}
+{{--                                    X Large--}}
+{{--                                </option>--}}
+{{--                            </select>--}}
+{{--                            @error('sizes')--}}
+{{--                            <span class="invalid-feedback" role="alert">--}}
+{{--                                <strong>{{ $message }}</strong>--}}
+{{--                            </span>--}}
+{{--                            @enderror--}}
+{{--                        </div>--}}
+
+
+{{--                        <div class="form-group mb-0 mt-3 justify-content-end">--}}
+{{--                            <div class="modal-footer justify-content-center">--}}
+{{--                                <button class="btn ripple btn-primary" type="submit">Save</button>--}}
+{{--                                <button class="btn ripple btn-secondary" data-dismiss="modal" type="button">Close</button>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </form>--}}
+
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
     <!-- End Small Modal -->
 
 @endsection
@@ -273,4 +335,25 @@
 
 <!-- Internal Modal js-->
 <script src="{{URL::asset('assets/js/modal.js')}}"></script>
+<script>
+    $('#exampleModal2').on('show.bs.modal',function (event){
+        var btn = $(event.relatedTarget);
+        var id = btn.data('id');
+        var quantity = btn.data('quantity');
+        var price = btn.data('price');
+        var discount = btn.data('discount');
+        var status = btn.data('status');
+        var in_stock = btn.data('in_stock');
+        var modal = $(this);
+        modal.find('.modal-body #id').val(id);
+        modal.find('.modal-body #quantity').val(quantity);
+        modal.find('.modal-body #price').val(price);
+        modal.find('.modal-body #discount').val(discount);
+        modal.find('.modal-body #in_stock').val(in_stock);
+        if (status == 1){
+            modal.find('.modal-body #status').prop("checked",true);
+        }
+
+    })
+</script>
 @endsection

@@ -24,11 +24,11 @@ class Product extends Model
         return $this->belongsTo(Category::class,"category_id","id");
     }
 
-    public function ProductColors(){
-        return $this->hasMany(ProductColor::class,"product_id","id");
+    public function ProductColorSizes(){
+        return $this->hasMany(ProductColorSize::class,"product_id","id");
     }
 
-    public function ProductSizes(){
-        return $this->hasMany(ProductSize::class,'product_id','id');
+    public function Images(){
+        return $this->hasMany(ProductImage::class,"product_id","id");
     }
 }

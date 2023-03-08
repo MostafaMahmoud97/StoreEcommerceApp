@@ -11,6 +11,7 @@ class ProductColorSize extends Model
     protected $table = "product_color_sizes";
     protected $fillable = [
         "id",
+        "product_id",
         'product_color_id',
         'product_size_id',
         'quantity',
@@ -20,7 +21,12 @@ class ProductColorSize extends Model
         "status"
     ];
 
-    public function Images(){
-        return $this->hasMany(ProductImage::class,"product_color_size_id","id");
+
+    public function ProductColor(){
+        return $this->belongsTo(ProductColor::class,"product_color_id","id");
+    }
+
+    public function ProductSize(){
+        return $this->belongsTo(ProductSize::class,"product_size_id","id");
     }
 }
