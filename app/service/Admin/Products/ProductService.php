@@ -39,6 +39,7 @@ class ProductService{
 
         $Product = Product::create($request->all());
 
+
         $file_path = "/Images_Product";
         foreach ($request->images as $image){
             $LogoPath = $this->SaveFile($image,$file_path);

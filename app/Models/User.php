@@ -50,4 +50,8 @@ class User extends Authenticatable
     public function UserAddresses(){
         return $this->hasMany(UserAddress::class,"user_id","id");
     }
+
+    public function RateProducts(){
+        $this->belongsToMany(Product::class,"product_rate","product_id","user_id","id","id");
+    }
 }

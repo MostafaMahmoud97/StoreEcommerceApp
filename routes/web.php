@@ -35,4 +35,6 @@ Route::controller(\App\Http\Controllers\User\UserController::class)->prefix('use
 Route::controller(\App\Http\Controllers\User\Product\ProductController::class)->group(function (){
     Route::get('/home','index')->name('home');
     Route::post('/home','filterProducts')->name('home.filter');
+    Route::get('/product-details/{product_id}','showProductDetails')->name('user.product.details');
+    Route::post('/rate-product','rateProduct')->name("rate.product");
 });

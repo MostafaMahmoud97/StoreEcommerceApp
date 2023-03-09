@@ -26,4 +26,12 @@ class ProductController extends Controller
     public function searchProducts(Request $request){
         return $this->service->searchProducts($request);
     }
+
+    public function showProductDetails($id){
+        return $this->service->showProductDetails($id);
+    }
+
+    public function rateProduct(Request $request){
+        return $this->service->rateProduct($request);
+    }
 }

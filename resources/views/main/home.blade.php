@@ -143,7 +143,7 @@
                                                     <i class="mdi mdi-heart-outline ml-auto wishlist"></i>
                                                 </div>
                                                 <img class="w-100" style="height: 218px;" src="{{asset('file/ImageProduct/'.$Product->image)}}" alt="product-image">
-                                                <a href="#" class="adtocart"> <i class="las la-shopping-cart "></i>
+                                                <a href="{{route('user.product.details',$Product->id)}}" class="adtocart"> <i class="las la-shopping-cart "></i>
                                                 </a>
                                             </div>
                                             <div class="text-center pt-3">
