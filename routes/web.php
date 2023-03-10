@@ -21,7 +21,7 @@ Route::get('/', function () {
 Auth::routes();
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+//
 //Route::get('/{name_route}',function ($name_route){
 //    return view($name_route);
 //});
@@ -37,4 +37,9 @@ Route::controller(\App\Http\Controllers\User\Product\ProductController::class)->
     Route::post('/home','filterProducts')->name('home.filter');
     Route::get('/product-details/{product_id}','showProductDetails')->name('user.product.details');
     Route::post('/rate-product','rateProduct')->name("rate.product");
+    Route::post('/get-product-color-size','getProductColorSize')->name('get.user.product.color.size');
+});
+
+Route::controller(\App\Http\Controllers\User\Product\CartController::class)->group(function (){
+    Route::post('/add-to-cart','addProductToCart')->name("user.add.to.cart");
 });

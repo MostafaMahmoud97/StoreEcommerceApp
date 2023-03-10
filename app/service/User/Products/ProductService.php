@@ -3,9 +3,12 @@ namespace App\service\User\Products;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductColorSize;
+use App\Models\ProductRate;
 use App\Models\ProductSize;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class ProductService{
     public function index($request){
@@ -41,6 +44,8 @@ class ProductService{
             $q->where('status',1);
         },'ProductColors','ProductSizes','Images'])->find($product_id);
 
+        $Product->product_rate = $this->calcProductRate($product_id);
+
         $LastProducts = Product::where('id','!=',$product_id)->with(['Category' => function($q){
             $q->select('id','name');
         }])->latest()->take(4)->get();
@@ -48,12 +53,30 @@ class ProductService{
         return view('user.product.product-details',compact('Product','LastProducts'));
     }
 
+    public function getProductColorSize($request){
+        $ProductColorSize = ProductColorSize::where('product_id',$request->product_id)->where('product_color_id',$request->product_color_id)->where('product_size_id',$request->product_size_id)->first();
+        if (!$ProductColorSize){
+            return Response::json(['status' => "error","message" => "no product by this requirement"]);
+        }
+
+        return Response::json($ProductColorSize);
+
+    }
+
     public function rateProduct($request){
-        $user_id = Auth::user()->id;
-        $user = User::find($user_id);
+        $user = Auth::user();
+        $rateProduct  = $user->RateProducts()->syncWithPivotValues([$request->product_id],['rate' => $request->rating_stars]);
 
-        $rateProduct  = $user->RateProducts()->attach([$request->product_id],['rate' => $request->rating_stars]);
+        return redirect()->route('user.product.details',$request->product_id);
+    }
 
-        return true;
+    public function calcProductRate($product_id){
+        $Sum_rates = ProductRate::select('rate')->where('product_id',$product_id)->get()->sum('rate');
+        $CountRate = ProductRate::select('id')->where('product_id',$product_id)->get()->count('id');
+        if ($CountRate == 0){
+            return ['rate' => 0,'count' => $CountRate];
+        }
+        $CalcRate = floor($Sum_rates / $CountRate);
+         return ['rate' => $CalcRate,'count' => $CountRate];
     }
 }

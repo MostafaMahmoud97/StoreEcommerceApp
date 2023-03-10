@@ -31,6 +31,10 @@ class ProductController extends Controller
         return $this->service->showProductDetails($id);
     }
 
+    public function getProductColorSize(Request $request){
+        return $this->service->getProductColorSize($request);
+    }
+
     public function rateProduct(Request $request){
         return $this->service->rateProduct($request);
     }

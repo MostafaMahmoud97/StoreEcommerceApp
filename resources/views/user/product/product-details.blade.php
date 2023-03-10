@@ -17,6 +17,7 @@
 				<!-- breadcrumb -->
 @endsection
 @section('content')
+    <input type="hidden" name="product_id" id="product_id_submit_color" value="{{$Product->id}}">
 				<!-- row -->
 				<div class="row row-sm">
 					<div class="col-xl-12">
@@ -42,20 +43,22 @@
 										<p class="text-muted tx-13 mb-1">Men red & Grey Checked Casual Shirt</p>
 										<div class="rating mb-1">
 											<div class="stars">
-												<span class="fa fa-star checked"></span>
-												<span class="fa fa-star checked"></span>
-												<span class="fa fa-star checked"></span>
-												<span class="fa fa-star text-muted"></span>
-												<span class="fa fa-star text-muted"></span>
+                                                @for($count = 1;$count <= 5; $count++)
+                                                    @if($count <= $Product->product_rate['rate'])
+                                                        <span class="fa fa-star checked"></span>
+                                                    @else
+                                                        <span class="fa fa-star text-muted"></span>
+                                                    @endif
+                                                @endfor
 											</div>
-											<span class="review-no">41 reviews</span>
+											<span class="review-no">{{$Product->product_rate['count']}} reviews</span>
 										</div>
-										<h6 class="price">current price: <span class="h3 ml-2">£{{$Product->price - $Product->discount_price}}</span></h6>
+										<h6 class="price">current price: <span class="h3 ml-2" id="current_price">£{{$Product->price - $Product->discount_price}}</span></h6>
 										<p class="product-description">{{$Product->description}}</p>
 										<p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p>
 										<div class="sizes d-flex">sizes:
                                             @foreach($Product->ProductSizes as $size)
-                                                <span class="size d-flex"  data-toggle="tooltip" title="{{$size->ProductSize->size}}"><label class="rdiobox mb-0"><input name="rdio" type="radio"> <span>{{$size->ProductSize->size}}</span></label></span>
+                                                <span class="size d-flex"  data-toggle="tooltip" title="{{$size->ProductSize->size}}"><label class="rdiobox mb-0"><input class="ajax-size" name="radio_size" type="radio" value="{{$size->ProductSize->id}}"> <span>{{$size->ProductSize->size}}</span></label></span>
                                             @endforeach
 										</div>
 										<div class="colors d-flex mr-3 mt-2">
@@ -64,7 +67,7 @@
 												@foreach($Product->ProductColors as $color)
                                                     <div class="mr-2">
                                                         <label class="colorinput">
-                                                            <input name="color" type="radio" value="{{$color->ProductColor->id}}" class="colorinput-input">
+                                                            <input name="radio_color" type="radio" value="{{$color->ProductColor->id}}" class="colorinput-input ajax-color">
                                                             <span class="colorinput-color" data-toggle="tooltip" title="{{$color->ProductColor->color_name}}" style="background-color: {{$color->ProductColor->color}}"></span>
                                                         </label>
                                                     </div>
@@ -77,11 +80,8 @@
 												<ul class=" mb-0 qunatity-list">
 													<li>
 														<div class="form-group">
-															<select name="quantity" id="select-countries17" class="form-control nice-select wd-100">
-																<option value="1" selected="">1</option>
-																<option value="2">2</option>
-																<option value="3">3</option>
-																<option value="4">4</option>
+															<select name="quantity" id="quantity_product" class="form-control nice-select wd-100">
+
 															</select>
 														</div>
 													</li>
@@ -206,4 +206,84 @@
 <!-- Internal Nice-select js-->
 <script src="{{URL::asset('assets/plugins/jquery-nice-select/js/jquery.nice-select.js')}}"></script>
 <script src="{{URL::asset('assets/plugins/jquery-nice-select/js/nice-select.js')}}"></script>
+
+    <script>
+        $(document).on('click','.ajax-color',function (e){
+            let Color_id = document.querySelector( 'input[name="radio_color"]:checked');
+            let Size_id = document.querySelector( 'input[name="radio_size"]:checked');
+            if(Size_id != null){
+                let CurrentPrice = document.getElementById('current_price');
+                let QuantitySelector = document.getElementById('quantity_product');
+                let Product_id = document.getElementById('product_id_submit_color');
+
+                $.ajax({
+                    type: "Post",
+                    url: "{{route('get.user.product.color.size')}}",
+                    data: {
+                        "_token" : "{{csrf_token()}}",
+                        "product_id" : Product_id.value,
+                        "product_color_id" : Color_id.value,
+                        "product_size_id" : Size_id.value
+                    },
+                    success: function (data){
+                        CurrentPrice.innerHTML = "£"+(data.price - data.discount_price);
+                        $("#quantity_product option").remove();
+                        $(".nice-select.form-control .list").html(``)
+                        for (let i = 1;i <= data.in_stock;i++){
+                            let option = document.createElement("option");
+                            option.text = i;
+                            option.value = i;
+                            QuantitySelector.appendChild(option);
+                            $(".nice-select.form-control .list").append(`<li data-value=${i} class="option">${i}</li>`)
+                        }
+
+                    },
+                    error: function (reject){
+
+                    }
+                });
+
+            }
+
+        });
+
+        $(document).on('click','.ajax-size',function (){
+            var Color_id = document.querySelector( 'input[name="radio_color"]:checked');
+            var Size_id = document.querySelector( 'input[name="radio_size"]:checked');
+            if(Color_id != null){
+                let CurrentPrice = document.getElementById('current_price');
+                let QuantitySelector = document.getElementById('quantity_product');
+                let Product_id = document.getElementById('product_id_submit_color');
+
+                $.ajax({
+                    type: "Post",
+                    url: "{{route('get.user.product.color.size')}}",
+                    data: {
+                        "_token" : "{{csrf_token()}}",
+                        "product_id" : Product_id.value,
+                        "product_color_id" : Color_id.value,
+                        "product_size_id" : Size_id.value
+                    },
+                    success: function (data){
+                        CurrentPrice.innerHTML = "£"+(data.price - data.discount_price);
+                        $("#quantity_product option").remove();
+                        $(".nice-select.form-control .list").html(``)
+                        for (let i = 1;i <= data.in_stock;i++){
+                            let option = document.createElement("option");
+                            option.text = i;
+                            option.value = i;
+                            QuantitySelector.appendChild(option);
+                            $(".nice-select.form-control .list").append(`<li data-value=${i} class="option">${i}</li>`)
+                        }
+
+                    },
+                    error: function (reject){
+
+                    }
+                });
+            }
+
+        });
+
+    </script>
 @endsection

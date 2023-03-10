@@ -52,6 +52,10 @@ class User extends Authenticatable
     }
 
     public function RateProducts(){
-        $this->belongsToMany(Product::class,"product_rate","product_id","user_id","id","id");
+        return $this->belongsToMany(Product::class,"product_rate","user_id","product_id","id","id");
+    }
+
+    public function Cart(){
+        return $this->belongsToMany(ProductColorSize::class,"carts","user_id","product_color_size_id","id","id");
     }
 }
