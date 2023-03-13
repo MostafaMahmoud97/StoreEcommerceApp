@@ -53,27 +53,10 @@
 											</div>
 											<span class="review-no">{{$Product->product_rate['count']}} reviews</span>
 										</div>
-										<h6 class="price">current price: <span class="h3 ml-2" id="current_price">£{{$Product->price - $Product->discount_price}}</span></h6>
+										@livewire('product-details-price',['price' => $Product->price,'discountPrice' => $Product->discount_price])
 										<p class="product-description">{{$Product->description}}</p>
 										<p class="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p>
-										<div class="sizes d-flex">sizes:
-                                            @foreach($Product->ProductSizes as $size)
-                                                <span class="size d-flex"  data-toggle="tooltip" title="{{$size->ProductSize->size}}"><label class="rdiobox mb-0"><input class="ajax-size" name="radio_size" type="radio" value="{{$size->ProductSize->id}}"> <span>{{$size->ProductSize->size}}</span></label></span>
-                                            @endforeach
-										</div>
-										<div class="colors d-flex mr-3 mt-2">
-											<span class="mt-2">colors:</span>
-											<div class="row gutters-xs mr-4">
-												@foreach($Product->ProductColors as $color)
-                                                    <div class="mr-2">
-                                                        <label class="colorinput">
-                                                            <input name="radio_color" type="radio" value="{{$color->ProductColor->id}}" class="colorinput-input ajax-color">
-                                                            <span class="colorinput-color" data-toggle="tooltip" title="{{$color->ProductColor->color_name}}" style="background-color: {{$color->ProductColor->color}}"></span>
-                                                        </label>
-                                                    </div>
-                                                @endforeach
-											</div>
-										</div>
+										@livewire('product-detail-color-size',['ProductSizes' => $Product->ProductSizes,'ProductColors'=> $Product->ProductColors,'Product_id' => $Product->id])
 										<div class="d-flex  mt-2">
 											<div class="mt-2 product-title">Quantity:</div>
 											<div class="d-flex ml-2">
